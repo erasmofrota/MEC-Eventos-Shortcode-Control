@@ -2,7 +2,7 @@
 /*
 Plugin Name: MEC Eventos Shortcode Control
 Description: Controla quais eventos do MEC podem ser listados por meio de shortcode.
-Version: 1.2
+Version: 1.3
 Author: Erasmo Frota
 */
 
@@ -332,7 +332,7 @@ add_shortcode('lista_participantes_agrupados_categoria', function () {
     <form id="filtroForm" method="post">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="col-lg-6 col-md-6 col-sm-12">
                     <label for="evento_id">Evento:</label>
                     <select name="evento_id" id="evento_id">
                         <option value="">-- Selecione um evento --</option>
@@ -352,19 +352,19 @@ add_shortcode('lista_participantes_agrupados_categoria', function () {
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="col-lg-6 col-md-6 col-sm-12">
                     <label for="nome">Nome do Participante:</label>
                      <div class="input-group mb-3">
                         <span class="input-group-text"><i class="mec-sl-magnifier"></i></span>
                         <input class="form-control" type="search" name="nome" id="nome" />
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <label for="categoria">Categoria:</label>
-                    <select name="categoria" id="categoria">
-                        <option value="">--Todas--</option>
-                    </select>
-                </div>
+                <!--<div class="col-lg-4 col-md-6 col-sm-12">-->
+                <!--    <label for="categoria">Categoria:</label>-->
+                <!--    <select name="categoria" id="categoria">-->
+                <!--        <option value="">--Todas--</option>-->
+                <!--    </select>-->
+                <!--</div>-->
             </div>
             <button type="submit">Buscar</button>
         </div>
