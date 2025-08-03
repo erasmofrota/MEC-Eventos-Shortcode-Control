@@ -2,7 +2,7 @@
 /*
 Plugin Name: MEC Eventos Shortcode Control
 Description: Controla quais eventos do MEC podem ser listados por meio de shortcode.
-Version: 1.3
+Version: 1.4
 Author: Erasmo Frota
 */
 
