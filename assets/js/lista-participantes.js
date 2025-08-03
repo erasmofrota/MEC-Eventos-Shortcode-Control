@@ -20,22 +20,37 @@ jQuery(document).ready(function ($) {
     }
 
     // Verifica a URL ao carregar e pré-seleciona o evento pelo slug
+    // Verifica a URL e aguarda o <select> estar populado para pré-selecionar o evento
     const urlParams = new URLSearchParams(window.location.search);
     const slugEvento = urlParams.get('evento');
 
     if (slugEvento) {
-        $('#evento_id option').each(function () {
-            const texto = $(this).text().toLowerCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        let tentativas = 0;
+        const intervalo = setInterval(() => {
+            let encontrado = false;
 
-            if (texto === slugEvento) {
-                $(this).prop('selected', true);
-                buscarParticipantes();
-                return false;
+            $('#evento_id option').each(function () {
+                const texto = $(this).text().toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+                if (texto === slugEvento) {
+                    $(this).prop('selected', true);
+                    buscarParticipantes();
+                    encontrado = true;
+                    clearInterval(intervalo);
+                    return false;
+                }
+            });
+
+            tentativas++;
+            if (!encontrado && tentativas >= 1) {
+                clearInterval(intervalo);
+                console.warn('Evento da URL não encontrado após 2s.');
             }
-        });
+        }, 20); // tenta a cada 20ms por até 2 segundos
     }
+
 
     // Submete manualmente
     $('#filtroForm').on('submit', function (e) {
