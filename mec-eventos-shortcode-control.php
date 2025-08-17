@@ -2,7 +2,7 @@
 /*
 Plugin Name: MEC Eventos Shortcode Control
 Description: Controla quais eventos do MEC podem ser listados por meio de shortcode.
-Version: 1.4
+Version: 1.5
 Author: Erasmo Frota
 */
 
@@ -328,54 +328,54 @@ add_shortcode('lista_participantes_agrupados_categoria', function () {
     global $wpdb;
 
     // Formulário de filtro
-    ?>
+?>
     <form id="filtroForm" method="post">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <?php $is_admin = is_user_logged_in() && current_user_can('administrator'); ?>
+
+                <div class="<?php echo $is_admin ? 'col-lg-6 col-md-6 col-sm-12' : 'd-none'; ?>"
+                    id="evento-wrapper" <?php echo $is_admin ? '' : 'aria-hidden="true" hidden'; ?>>
                     <label for="evento_id">Evento:</label>
                     <select name="evento_id" id="evento_id">
                         <option value="">-- Selecione um evento --</option>
                         <?php
+                        global $wpdb;
                         $eventos = $wpdb->get_results("
-                            SELECT p.ID as post_id, p.post_title
-                            FROM {$wpdb->prefix}mec_events AS me
-                            JOIN {$wpdb->prefix}posts AS p ON me.post_id = p.ID
-                            WHERE me.post_id IN (
-                                SELECT post_id FROM {$wpdb->prefix}mec_eventos_autorizados
-                            )
-                            ORDER BY me.post_id DESC
-                        ");
+      SELECT p.ID as post_id, p.post_title
+      FROM {$wpdb->prefix}mec_events AS me
+      JOIN {$wpdb->prefix}posts AS p ON me.post_id = p.ID
+      WHERE me.post_id IN (
+        SELECT post_id FROM {$wpdb->prefix}mec_eventos_autorizados
+      )
+      ORDER BY me.post_id DESC
+    ");
                         foreach ($eventos as $evento) {
                             echo "<option value='{$evento->post_id}'>" . esc_html($evento->post_title) . "</option>";
                         }
                         ?>
                     </select>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+
+                <div class="<?php echo $is_admin ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'; ?>">
                     <label for="nome">Nome do Participante:</label>
-                     <div class="input-group mb-3">
+                    <div class="input-group mb-3">
                         <span class="input-group-text"><i class="mec-sl-magnifier"></i></span>
                         <input class="form-control" type="search" name="nome" id="nome" />
                     </div>
                 </div>
-                <!--<div class="col-lg-4 col-md-6 col-sm-12">-->
-                <!--    <label for="categoria">Categoria:</label>-->
-                <!--    <select name="categoria" id="categoria">-->
-                <!--        <option value="">--Todas--</option>-->
-                <!--    </select>-->
-                <!--</div>-->
+
             </div>
             <button type="submit">Buscar</button>
         </div>
     </form>
     <div id="loader" style="display:none; text-align: center;">
-    <img src="<?php echo plugins_url('assets/img/loader.gif', __FILE__); ?>" alt="Carregando" style="width: 50px;" />
-    <p>Carregando...</p>
-</div>
+        <img src="<?php echo plugins_url('assets/img/loader.gif', __FILE__); ?>" alt="Carregando" style="width: 50px;" />
+        <p>Carregando...</p>
+    </div>
 
     <div id="resultadoListaParticipantes" style="margin-top: 20px;"></div>
-    <?php
+<?php
 
     // Enfileirar JS para tratar o AJAX
     wp_enqueue_script('lista-participantes-js', plugins_url('assets/js/lista-participantes.js', __FILE__), ['jquery'], null, true);
@@ -390,7 +390,8 @@ add_shortcode('lista_participantes_agrupados_categoria', function () {
 add_action('wp_ajax_filtro_lista_participantes', 'mec_esc_filtrar_participantes');
 add_action('wp_ajax_nopriv_filtro_lista_participantes', 'mec_esc_filtrar_participantes');
 
-function mec_esc_filtrar_participantes() {
+function mec_esc_filtrar_participantes()
+{
     check_ajax_referer('filtro_participantes_nonce', 'nonce');
 
     $evento_id = intval($_POST['evento_id']);
@@ -417,7 +418,7 @@ function mec_esc_filtrar_participantes() {
         WHERE mb.event_id = %d
     ";
 
-    
+
 
     $resultados = $wpdb->get_results($wpdb->prepare($query, $evento_id));
     if (!$resultados) {
@@ -431,7 +432,7 @@ function mec_esc_filtrar_participantes() {
     $evento_titulo = get_the_title($evento_id);
     echo "<p><strong>Evento:</strong> <a href='{$evento_link}' class='link' target='_blank'>{$evento_titulo}</a></p>";
 
-    
+
 
     $linhas_por_categoria = [];
 
@@ -458,7 +459,7 @@ function mec_esc_filtrar_participantes() {
         }
     }
 
-   
+
 
     foreach ($linhas_por_categoria as $categoria => $participantes) {
         echo "<h4>Categoria: {$categoria}</h4>";
@@ -479,8 +480,7 @@ function mec_esc_filtrar_participantes() {
     }
 
     $html = ob_get_clean();
-wp_send_json_success(['html' => $html]);
-
+    wp_send_json_success(['html' => $html]);
 }
 
 
