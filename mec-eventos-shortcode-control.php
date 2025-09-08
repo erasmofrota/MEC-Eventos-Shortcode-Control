@@ -2,7 +2,7 @@
 /*
 Plugin Name: MEC Eventos Shortcode Control
 Description: Controla quais eventos do MEC podem ser listados por meio de shortcode.
-Version: 1.5
+Version: 1.6
 Author: Erasmo Frota
 */
 
@@ -461,6 +461,7 @@ function mec_esc_filtrar_participantes()
 
 
 
+    ksort($linhas_por_categoria, SORT_NATURAL | SORT_FLAG_CASE);
     foreach ($linhas_por_categoria as $categoria => $participantes) {
         echo "<h4>Categoria: {$categoria}</h4>";
         echo '<table border="1" cellpadding="5" cellspacing="0">';
