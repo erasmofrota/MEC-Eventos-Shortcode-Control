@@ -503,7 +503,7 @@ add_shortcode('botao_evento', function($atts) {
     $slug = trim($slug, '-');
 
     
-    $texto = !empty($atts['texto']) ? esc_html($atts['texto']) : "Ver Participantes de {$titulo}";
+     $texto = !empty($atts['texto']) ? esc_html($atts['texto']) : "Ver Lista de  Participantes do Evento {$titulo}";
 
     
     $url = esc_url($atts['pagina'] . '?evento=' . $slug);
