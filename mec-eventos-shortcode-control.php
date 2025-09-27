@@ -2,7 +2,7 @@
 /*
 Plugin Name: MEC Eventos Shortcode Control
 Description: Controla quais eventos do MEC podem ser listados por meio de shortcode.
-Version: 1.6
+Version: 1.7
 Author: Erasmo Frota
 */
 
@@ -483,6 +483,23 @@ function mec_esc_filtrar_participantes()
     $html = ob_get_clean();
     wp_send_json_success(['html' => $html]);
 }
+
+add_shortcode('botao_evento', function($atts) {
+    $atts = shortcode_atts([
+        'id' => '',
+        'pagina' => '/participantes'
+    ], $atts);
+
+    if (!$atts['id']) return '';
+
+    $titulo = get_the_title($atts['id']);
+    $slug = sanitize_title($titulo);
+
+    $url = esc_url($atts['pagina'] . '?evento=' . $slug);
+
+    return "<a class='btn-evento' href='{$url}'>Ver Participantes de {$titulo}</a>";
+});
+
 
 
 ?>
