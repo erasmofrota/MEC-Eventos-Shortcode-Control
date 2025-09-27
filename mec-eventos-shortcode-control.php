@@ -486,19 +486,32 @@ function mec_esc_filtrar_participantes()
 
 add_shortcode('botao_evento', function($atts) {
     $atts = shortcode_atts([
-        'id' => '',
-        'pagina' => '/participantes'
+        'id' => '', 
+        'pagina' => '/participantes', 
+        'texto' => '' 
     ], $atts);
 
-    if (!$atts['id']) return '';
+    if (!$atts['id']) return '<p style="color:red;">ID do evento não informado.</p>';
 
+    
     $titulo = get_the_title($atts['id']);
-    $slug = sanitize_title($titulo);
+    if (!$titulo) return '<p style="color:red;">Evento não encontrado.</p>';
 
+    
+    $slug = strtolower(remove_accents($titulo));
+    $slug = preg_replace('/[^a-z0-9]+/i', '-', $slug);
+    $slug = trim($slug, '-');
+
+    
+    $texto = !empty($atts['texto']) ? esc_html($atts['texto']) : "Ver Participantes de {$titulo}";
+
+    
     $url = esc_url($atts['pagina'] . '?evento=' . $slug);
 
-    return "<a class='btn-evento' href='{$url}'>Ver Participantes de {$titulo}</a>";
+    
+    return "<a class='btn-evento' href='{$url}' style='display:inline-block;padding:10px 20px;background:#0073aa;color:#fff;border-radius:5px;text-decoration:none;'>{$texto}</a>";
 });
+
 
 
 
