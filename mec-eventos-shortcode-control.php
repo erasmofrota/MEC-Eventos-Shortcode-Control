@@ -498,7 +498,9 @@ add_shortcode('botao_evento', function($atts) {
     if (!$titulo) return '<p style="color:red;">Evento não encontrado.</p>';
 
     
-    $slug = strtolower(remove_accents($titulo));
+    $titulo_limpo = str_replace(['º', 'ª'], '', $titulo);
+
+    $slug = strtolower(remove_accents($titulo_limpo));
     $slug = preg_replace('/[^a-z0-9]+/i', '-', $slug);
     $slug = trim($slug, '-');
 
@@ -509,7 +511,7 @@ add_shortcode('botao_evento', function($atts) {
     $url = esc_url($atts['pagina'] . '?evento=' . $slug);
 
     
-    return "<a class='btn-evento' href='{$url}' style='display:inline-block;padding:10px 20px;background:#0073aa;color:#fff;border-radius:5px;text-decoration:none;'>{$texto}</a>";
+    return "<a class='btn-evento' href='{$url}' style='display:inline-block;padding:10px 20px;background:#0073aa;color:#fff;border-radius:5px;text-decoration:none;' target='_blank'>{$texto}</a>";
 });
 
 
